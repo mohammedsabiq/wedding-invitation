@@ -6,17 +6,6 @@ import Confetti from './Confetti'
 
 const REVEAL_THRESHOLD = 0.5
 
-// Small decorative flourish used in the card corners.
-function CornerFlourish({ className }) {
-  return (
-    <svg className={className} width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden="true">
-      <path d="M2 2v14M2 2h14" stroke="#E7CD86" strokeOpacity="0.5" strokeWidth="1" strokeLinecap="round" />
-      <path d="M8 8c8 0 14 6 14 14" stroke="#E7CD86" strokeOpacity="0.3" strokeWidth="0.8" strokeLinecap="round" />
-      <circle cx="6" cy="6" r="1.6" fill="#E7CD86" fillOpacity="0.7" />
-    </svg>
-  )
-}
-
 // One wide gold panel the guest scratches to uncover the full wedding date.
 function ScratchPanel({ onReveal, revealedInit, children }) {
   const canvasRef = useRef(null)
@@ -208,10 +197,6 @@ export default function ScratchCard() {
           {/* refined double inset frame */}
           <span className="pointer-events-none absolute inset-2 rounded-[1.7rem] border border-gold/35" />
           <span className="pointer-events-none absolute inset-[0.65rem] rounded-[1.5rem] border border-gold/15" />
-          <CornerFlourish className="pointer-events-none absolute left-3 top-3" />
-          <CornerFlourish className="pointer-events-none absolute right-3 top-3 -scale-x-100" />
-          <CornerFlourish className="pointer-events-none absolute bottom-3 left-3 -scale-y-100" />
-          <CornerFlourish className="pointer-events-none absolute bottom-3 right-3 -scale-100" />
 
           <div className="relative">
             <p className="font-body text-[10px] uppercase tracking-[0.45em] text-gold/80">Save the Date</p>

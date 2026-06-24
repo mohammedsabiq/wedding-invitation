@@ -30,33 +30,6 @@ export default function Hero() {
       <div className="pointer-events-none absolute inset-0 z-[2] bg-[radial-gradient(ellipse_62%_56%_at_50%_50%,rgba(45,6,16,0.62),transparent_72%)]" />
 
       <div className="relative z-10 mx-auto flex w-full max-w-[22rem] flex-col items-center text-center">
-        {/* Bismillah */}
-        <motion.p
-          className="font-arabic text-2xl leading-relaxed text-gold-light"
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.7, ease }}
-        >
-          بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ
-        </motion.p>
-
-        <motion.p
-          className="mt-6 font-body text-[10px] uppercase tracking-[0.45em] text-gold/80"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4, duration: 0.7 }}
-        >
-          The Wedding Of
-        </motion.p>
-
-        {/* Names framed by editorial hairlines */}
-        <motion.div
-          className="mt-6 h-px w-full bg-gradient-to-r from-transparent via-gold/55 to-transparent"
-          initial={{ scaleX: 0, opacity: 0 }}
-          animate={{ opacity: 1, scaleX: 1 }}
-          transition={{ delay: 0.5, duration: 0.8, ease }}
-        />
-
         <motion.h1
           className="mt-7 pb-2 font-script text-6xl leading-[1.15] text-gold-shimmer"
           initial={{ opacity: 0, y: 16 }}
@@ -84,21 +57,6 @@ export default function Hero() {
           {wedding.groom.name}
         </motion.h1>
 
-        <motion.div
-          className="mt-7 h-px w-full bg-gradient-to-r from-transparent via-gold/55 to-transparent"
-          initial={{ scaleX: 0, opacity: 0 }}
-          animate={{ opacity: 1, scaleX: 1 }}
-          transition={{ delay: 1.15, duration: 0.8, ease }}
-        />
-
-        <motion.p
-          className="mt-7 max-w-[15rem] font-body text-[10px] uppercase leading-relaxed tracking-[0.25em] text-cream/55"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.3, duration: 0.7 }}
-        >
-          {wedding.inviteLine}
-        </motion.p>
       </div>
 
       {/* modern scroll cue */}
@@ -108,10 +66,10 @@ export default function Hero() {
         animate={{ opacity: 1 }}
         transition={{ delay: 1.6, duration: 0.8 }}
       >
-        <span className="font-body text-[9px] uppercase tracking-[0.4em] text-gold/70">Scroll</span>
+        <span className="font-body text-[10px] uppercase tracking-[0.4em] text-gold-light drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)]">Scroll</span>
         <motion.span
-          className="block h-9 w-px bg-gradient-to-b from-gold/70 to-transparent"
-          animate={{ scaleY: [0.4, 1, 0.4], opacity: [0.4, 1, 0.4] }}
+          className="block h-10 w-[1.5px] bg-gradient-to-b from-gold-light to-transparent"
+          animate={{ scaleY: [0.5, 1, 0.5], opacity: [0.6, 1, 0.6] }}
           transition={{ duration: 1.8, repeat: Infinity }}
           style={{ transformOrigin: 'top' }}
         />

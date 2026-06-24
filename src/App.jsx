@@ -12,10 +12,21 @@ import Footer from './components/Footer'
 import MusicToggle from './components/MusicToggle'
 
 export default function App() {
-  const [opened, setOpened] = useState(false)
+  // `?open=1` skips the intro, so the page starts unlocked in that case.
+  const [opened, setOpened] = useState(
+    () => typeof window !== 'undefined' && /[?&]open=1\b/.test(window.location.search),
+  )
   // Hide the ambient petals/sparkles over the last section (footer video).
   const [atFooter, setAtFooter] = useState(false)
   const footerRef = useRef(null)
+
+  // Lock page scrolling while the opening intro is showing.
+  useEffect(() => {
+    document.body.style.overflow = opened ? '' : 'hidden'
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [opened])
 
   useEffect(() => {
     const el = footerRef.current

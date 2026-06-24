@@ -83,7 +83,7 @@ export const wedding = {
 
   // --- Contact / Share ------------------------------------------------------
   contactPhone: '+91 90000 00000',
-  hashtag: '#SaleeqWedsFasna',
+  hashtag: '#Saleeq&Fasna',
 }
 
 // Convenience derived strings
