@@ -87,10 +87,10 @@ export default function EnvelopeIntro({ onOpened }) {
               <p className="font-body text-[9px] uppercase tracking-[0.45em] text-gold/80">
                 You Are Invited
               </p>
-              <div className="mt-3 flex flex-col items-center font-script text-4xl leading-[1.05] text-gold-shimmer">
-                <span>{wedding.bride.name}</span>
+              <div className="mt-3 flex flex-col items-center font-script text-4xl leading-[1.18] text-gold-shimmer">
+                <span className="pb-1">{wedding.bride.name}</span>
                 <span className="my-0.5 text-xl">&amp;</span>
-                <span>{wedding.groom.name}</span>
+                <span className="pb-1">{wedding.groom.name}</span>
               </div>
             </motion.div>
 
@@ -106,7 +106,7 @@ export default function EnvelopeIntro({ onOpened }) {
               transition={{ delay: opened ? 0.55 : 0, duration: 1.6, times: [0, 0.45, 1], ease: [0.22, 1, 0.36, 1] }}
             >
               <div className="relative rounded-2xl bg-cream-light px-8 py-9 text-center shadow-card ring-1 ring-gold/40">
-                <p className="font-arabic text-2xl text-maroon">بسم الله</p>
+                <p className="font-arabic text-xl leading-relaxed text-maroon">بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</p>
                 <div className="mx-auto my-3 h-px w-12 bg-gold/50" />
                 <h2 className="font-script text-3xl text-gold-shimmer">{wedding.bride.name}</h2>
                 <p className="font-body text-[10px] uppercase tracking-[0.3em] text-gold-dark">&amp;</p>

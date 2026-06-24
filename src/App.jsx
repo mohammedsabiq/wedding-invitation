@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import EnvelopeIntro from './components/EnvelopeIntro'
 import Petals from './components/Petals'
 import Hero from './components/Hero'
@@ -13,6 +13,20 @@ import MusicToggle from './components/MusicToggle'
 
 export default function App() {
   const [opened, setOpened] = useState(false)
+  // Hide the ambient petals/sparkles over the last section (footer video).
+  const [atFooter, setAtFooter] = useState(false)
+  const footerRef = useRef(null)
+
+  useEffect(() => {
+    const el = footerRef.current
+    if (!el) return
+    const io = new IntersectionObserver(
+      ([entry]) => setAtFooter(entry.isIntersecting),
+      { threshold: 0.12 },
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
 
   return (
     // Dark maroon "stage" — on desktop the invitation sits centred like a card;
@@ -21,8 +35,8 @@ export default function App() {
       {/* Opening envelope overlay */}
       <EnvelopeIntro onOpened={() => setOpened(true)} />
 
-      {/* Ambient floating rose petals + golden particles */}
-      <Petals />
+      {/* Ambient floating rose petals + golden particles — hidden on the footer */}
+      {!atFooter && <Petals />}
 
       {/* The portrait invitation card */}
       <div className="device sm:rounded-[2rem]">
@@ -35,7 +49,9 @@ export default function App() {
           <Timeline />
           <LocationSection />
         </main>
-        <Footer />
+        <div ref={footerRef}>
+          <Footer />
+        </div>
         <MusicToggle autoStartSignal={opened} />
       </div>
     </div>

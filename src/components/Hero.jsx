@@ -26,16 +26,18 @@ export default function Hero() {
       className="relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-maroon-deep px-7 py-20"
     >
       <HeroOverlay />
+      {/* highlight backdrop so the names & text stand out over the image */}
+      <div className="pointer-events-none absolute inset-0 z-[2] bg-[radial-gradient(ellipse_62%_56%_at_50%_50%,rgba(45,6,16,0.62),transparent_72%)]" />
 
       <div className="relative z-10 mx-auto flex w-full max-w-[22rem] flex-col items-center text-center">
         {/* Bismillah */}
         <motion.p
-          className="font-arabic text-2xl text-gold-light"
+          className="font-arabic text-2xl leading-relaxed text-gold-light"
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.7, ease }}
         >
-          بِسْمِ ٱللَّٰهِ
+          بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ
         </motion.p>
 
         <motion.p
@@ -56,7 +58,7 @@ export default function Hero() {
         />
 
         <motion.h1
-          className="mt-7 font-script text-6xl leading-[0.95] text-gold-shimmer"
+          className="mt-7 pb-2 font-script text-6xl leading-[1.15] text-gold-shimmer"
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.65, duration: 0.8, ease }}
@@ -74,7 +76,7 @@ export default function Hero() {
         </motion.p>
 
         <motion.h1
-          className="font-script text-6xl leading-[0.95] text-gold-shimmer"
+          className="pb-2 font-script text-6xl leading-[1.15] text-gold-shimmer"
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1, duration: 0.8, ease }}

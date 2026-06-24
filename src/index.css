@@ -135,23 +135,31 @@
   .text-balance {
     text-wrap: balance;
   }
-  /* subtle geometric tile for cream sections */
+  /* Warm cream with ambient gold glow + an Islamic 8-point-star damask motif */
   .pattern-cream {
-    background-color: #f7f1e6;
+    background-color: #f6eee2;
     background-image:
-      radial-gradient(130% 80% at 50% -12%, rgba(255, 253, 248, 0.9), rgba(247, 241, 230, 0) 60%),
-      radial-gradient(130% 85% at 50% 112%, rgba(214, 191, 158, 0.3), rgba(247, 241, 230, 0) 58%),
-      url("data:image/svg+xml,%3Csvg width='44' height='44' viewBox='0 0 44 44' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23B08A4E' stroke-opacity='0.16' stroke-width='0.8'%3E%3Ccircle cx='0' cy='0' r='22'/%3E%3Ccircle cx='44' cy='0' r='22'/%3E%3Ccircle cx='0' cy='44' r='22'/%3E%3Ccircle cx='44' cy='44' r='22'/%3E%3Ccircle cx='22' cy='22' r='22'/%3E%3C/g%3E%3C/svg%3E");
-    background-size: auto, auto, 44px 44px;
+      /* ambient warm highlights */
+      radial-gradient(120% 80% at 50% -10%, rgba(231, 205, 134, 0.28), transparent 55%),
+      radial-gradient(90% 70% at 0% 100%, rgba(240, 220, 209, 0.5), transparent 60%),
+      radial-gradient(90% 70% at 100% 100%, rgba(231, 205, 134, 0.16), transparent 60%),
+      /* tone-on-tone diamond lattice for fine texture */
+      repeating-linear-gradient(45deg, rgba(176, 138, 78, 0.05) 0 1px, transparent 1px 26px),
+      repeating-linear-gradient(-45deg, rgba(176, 138, 78, 0.05) 0 1px, transparent 1px 26px),
+      /* ornamental Islamic 8-point star tile */
+      url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23B08A4E' stroke-opacity='0.13' stroke-width='1.1'%3E%3Cpath d='M60 14l11.3 11.3L60 36.6 48.7 25.3z'/%3E%3Cpath d='M60 14l4 17.4L78.4 24 67 38l17.4-4-12.4 12.4L88.4 50 71 54l13.4 11.3L67 62l11.4 14.4L64 67l-4 17.4L56 67l-14.4 9.4L53 62l-17.4 3.3L49 54l-17.4-4L49 46.4 31.6 36 49 40 36.6 25.6 51 33z' stroke-opacity='0.07'/%3E%3Ccircle cx='60' cy='45' r='3.5'/%3E%3Cpath d='M0 0l15 15M120 0l-15 15M0 120l15-15M120 120l-15-15'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: auto, auto, auto, auto, auto, 120px 120px;
   }
-  /* deep maroon panel with a delicate gold diamond tile */
+  /* Deep maroon with a velvet radial glow + gold star damask */
   .pattern-maroon {
-    background-color: #6e1124;
+    background-color: #54091a;
     background-image:
-      radial-gradient(130% 80% at 50% -12%, rgba(231, 205, 134, 0.18), rgba(110, 17, 36, 0) 56%),
-      radial-gradient(130% 90% at 50% 115%, rgba(45, 6, 16, 0.75), rgba(110, 17, 36, 0) 60%),
-      url("data:image/svg+xml,%3Csvg width='44' height='44' viewBox='0 0 44 44' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23E7CD86' stroke-opacity='0.12' stroke-width='0.8'%3E%3Ccircle cx='0' cy='0' r='22'/%3E%3Ccircle cx='44' cy='0' r='22'/%3E%3Ccircle cx='0' cy='44' r='22'/%3E%3Ccircle cx='44' cy='44' r='22'/%3E%3Ccircle cx='22' cy='22' r='22'/%3E%3C/g%3E%3C/svg%3E");
-    background-size: auto, auto, 44px 44px;
+      radial-gradient(110% 80% at 50% 0%, rgba(140, 30, 51, 0.85), transparent 60%),
+      radial-gradient(90% 70% at 50% 120%, rgba(58, 7, 18, 0.9), transparent 55%),
+      repeating-linear-gradient(45deg, rgba(231, 205, 134, 0.05) 0 1px, transparent 1px 26px),
+      repeating-linear-gradient(-45deg, rgba(231, 205, 134, 0.05) 0 1px, transparent 1px 26px),
+      url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23E7CD86' stroke-opacity='0.12' stroke-width='1.1'%3E%3Cpath d='M60 14l11.3 11.3L60 36.6 48.7 25.3z'/%3E%3Cpath d='M60 14l4 17.4L78.4 24 67 38l17.4-4-12.4 12.4L88.4 50 71 54l13.4 11.3L67 62l11.4 14.4L64 67l-4 17.4L56 67l-14.4 9.4L53 62l-17.4 3.3L49 54l-17.4-4L49 46.4 31.6 36 49 40 36.6 25.6 51 33z' stroke-opacity='0.06'/%3E%3Ccircle cx='60' cy='45' r='3.5'/%3E%3Cpath d='M0 0l15 15M120 0l-15 15M0 120l15-15M120 120l-15-15'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: auto, auto, auto, auto, 120px 120px;
   }
   /* backdrop behind the device on large screens */
   .stage-bg {

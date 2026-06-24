@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 // If you add a real track at /public/music.mp3 it will be used and faded
 // in/out smoothly. Otherwise a gentle generated ambient tone plays so the
 // toggle always does something out of the box.
-const TRACK_SRC = '/music.mp3'
+const TRACK_SRC = '/wedding-music-bismillah.mp3'
 const FADE_MS = 1200
 const TARGET_VOLUME = 0.4
 
@@ -120,11 +120,22 @@ export default function MusicToggle({ autoStartSignal }) {
     } else {
       if (hasTrack && audioRef.current) {
         audioRef.current.volume = 0
-        audioRef.current.play().then(() => fadeAudio(TARGET_VOLUME)).catch(() => {})
+        audioRef.current
+          .play()
+          .then(() => {
+            fadeAudio(TARGET_VOLUME)
+            setPlaying(true)
+          })
+          .catch(() => {
+            // real track blocked/unavailable — fall back to the synth so the
+            // toggle always produces sound on tap.
+            startSynth()
+            setPlaying(true)
+          })
       } else {
         startSynth()
+        setPlaying(true)
       }
-      setPlaying(true)
     }
   }
 

@@ -1,39 +1,33 @@
 import { wedding } from '../data/config'
-import { ArchMotif } from './IslamicPattern'
 import { GoldRings } from './Roses'
 import { Reveal } from './ui'
 import Watermark from './Watermark'
 
-// Gold monogram ring with the couple's initials.
-function Monogram() {
-  const initials = `${wedding.bride.name[0]} · ${wedding.groom.name[0]}`
-  return (
-    <div className="relative mx-auto mb-6 flex h-24 w-24 items-center justify-center">
-      <span className="absolute inset-0 rounded-full border border-dashed border-gold/40 animate-spin-slow" />
-      <span className="absolute inset-[6px] rounded-full border border-gold/60" />
-      <span className="font-serif text-2xl font-semibold text-gold-shimmer">{initials}</span>
-    </div>
-  )
-}
-
 export default function Footer() {
   return (
-    <footer className="relative overflow-hidden px-5 py-20 text-center text-cream-light">
-      {/* dark luxury backdrop */}
-      <div className="absolute inset-0 bg-gradient-to-b from-maroon-deep via-[#27060e] to-black" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(194,154,69,0.2),transparent_60%)]" />
+    <footer className="relative overflow-hidden px-5 pt-4 pb-14 text-center text-cream-light">
+      {/* full-bleed looping video backdrop */}
+      <video
+        className="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover"
+        autoPlay
+        loop
+        muted
+        playsInline
+        aria-hidden="true"
+      >
+        <source src="/footer-bg.mp4" type="video/mp4" />
+      </video>
       <Watermark tone="maroon" />
 
       <div className="relative z-10 mx-auto max-w-sm">
         <Reveal>
-          <Monogram />
-          <ArchMotif className="mx-auto mb-3 h-10 w-24 opacity-90" color="#E7CD86" />
-          <p className="font-arabic text-2xl text-gold-light">بَارَكَ اللّٰهُ لَكُمَا</p>
+          {/* spacer preserving the height the monogram + arch motif + blessing used to occupy */}
+          <div aria-hidden="true" className="h-[11rem]" />
 
-          <div className="mt-6 flex flex-col items-center font-script text-5xl leading-[1.05] text-gold-shimmer">
-            <span>{wedding.bride.name}</span>
+          <div className="mt-6 flex flex-col items-center font-script text-5xl leading-[1.2] text-gold-shimmer">
+            <span className="pb-1">{wedding.bride.name}</span>
             <span className="my-1 text-3xl">&amp;</span>
-            <span>{wedding.groom.name}</span>
+            <span className="pb-1">{wedding.groom.name}</span>
           </div>
 
           {/* original closing line */}

@@ -4,26 +4,21 @@ import { wedding } from '../data/config'
 import Watermark from './Watermark'
 import Confetti from './Confetti'
 
-const COIN_THRESHOLD = 0.55
+const REVEAL_THRESHOLD = 0.5
 
-function dateCoins() {
-  const d = new Date(wedding.date)
-  if (isNaN(d)) return [{ v: wedding.dateLabel, k: 'Date' }]
-  const day = d.getDate()
-  const suffix =
-    day % 10 === 1 && day !== 11 ? 'st'
-    : day % 10 === 2 && day !== 12 ? 'nd'
-    : day % 10 === 3 && day !== 13 ? 'rd'
-    : 'th'
-  return [
-    { v: `${day}${suffix}`, k: 'Day' },
-    { v: d.toLocaleString('en', { month: 'long' }), k: 'Month' },
-    { v: `${d.getFullYear()}`, k: 'Year' },
-  ]
+// Small decorative flourish used in the card corners.
+function CornerFlourish({ className }) {
+  return (
+    <svg className={className} width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden="true">
+      <path d="M2 2v14M2 2h14" stroke="#E7CD86" strokeOpacity="0.5" strokeWidth="1" strokeLinecap="round" />
+      <path d="M8 8c8 0 14 6 14 14" stroke="#E7CD86" strokeOpacity="0.3" strokeWidth="0.8" strokeLinecap="round" />
+      <circle cx="6" cy="6" r="1.6" fill="#E7CD86" fillOpacity="0.7" />
+    </svg>
+  )
 }
 
-// A circular gold coin you scratch to uncover a date part.
-function ScratchCoin({ coin, onReveal, revealedInit = false }) {
+// One wide gold panel the guest scratches to uncover the full wedding date.
+function ScratchPanel({ onReveal, revealedInit, children }) {
   const canvasRef = useRef(null)
   const wrapRef = useRef(null)
   const drawing = useRef(false)
@@ -33,19 +28,28 @@ function ScratchCoin({ coin, onReveal, revealedInit = false }) {
 
   const paint = useCallback((ctx, w, h) => {
     const g = ctx.createLinearGradient(0, 0, w, h)
-    g.addColorStop(0, '#A07A2C')
-    g.addColorStop(0.4, '#E7CD86')
+    g.addColorStop(0, '#9C7529')
+    g.addColorStop(0.35, '#E7CD86')
     g.addColorStop(0.5, '#FBEBC0')
-    g.addColorStop(0.6, '#E7CD86')
-    g.addColorStop(1, '#A07A2C')
+    g.addColorStop(0.65, '#E7CD86')
+    g.addColorStop(1, '#9C7529')
     ctx.globalCompositeOperation = 'source-over'
     ctx.fillStyle = g
     ctx.fillRect(0, 0, w, h)
-    ctx.fillStyle = 'rgba(74,10,24,0.5)'
-    ctx.font = '600 22px Cormorant Garamond, serif'
+    // subtle minted texture dots
+    ctx.fillStyle = 'rgba(122,90,46,0.18)'
+    for (let y = 10; y < h; y += 16) {
+      for (let x = (y % 32 === 0 ? 10 : 18); x < w; x += 16) {
+        ctx.beginPath()
+        ctx.arc(x, y, 1, 0, Math.PI * 2)
+        ctx.fill()
+      }
+    }
+    ctx.fillStyle = 'rgba(74,10,24,0.55)'
+    ctx.font = '600 15px Cormorant Garamond, serif'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
-    ctx.fillText('✦', w / 2, h / 2)
+    ctx.fillText('✦  S C R A T C H   H E R E  ✦', w / 2, h / 2)
   }, [])
 
   const setup = useCallback(() => {
@@ -78,7 +82,7 @@ function ScratchCoin({ coin, onReveal, revealedInit = false }) {
   const scratch = (x, y) => {
     const ctx = canvasRef.current.getContext('2d')
     ctx.globalCompositeOperation = 'destination-out'
-    ctx.lineWidth = 28
+    ctx.lineWidth = 34
     ctx.lineCap = 'round'
     const from = last.current || { x, y }
     ctx.beginPath()
@@ -86,7 +90,7 @@ function ScratchCoin({ coin, onReveal, revealedInit = false }) {
     ctx.lineTo(x, y)
     ctx.stroke()
     ctx.beginPath()
-    ctx.arc(x, y, 14, 0, Math.PI * 2)
+    ctx.arc(x, y, 18, 0, Math.PI * 2)
     ctx.fill()
     last.current = { x, y }
   }
@@ -125,37 +129,42 @@ function ScratchCoin({ coin, onReveal, revealedInit = false }) {
 
   const start = (e) => { if (done.current) return; drawing.current = true; const { x, y } = pos(e); last.current = { x, y }; scratch(x, y) }
   const move = (e) => { if (!drawing.current || done.current) return; e.preventDefault(); const { x, y } = pos(e); scratch(x, y) }
-  const end = () => { if (!drawing.current || done.current) return; drawing.current = false; last.current = null; if (pct() >= COIN_THRESHOLD) reveal() }
+  const end = () => { if (!drawing.current || done.current) return; drawing.current = false; last.current = null; if (pct() >= REVEAL_THRESHOLD) reveal() }
 
   return (
-    <div className="flex flex-col items-center gap-2">
-      <div className="relative">
-        {!revealed && (
-          <motion.span
-            className="absolute -inset-1 rounded-full"
-            style={{ boxShadow: '0 0 18px 3px rgba(231,205,134,0.45)' }}
-            animate={{ opacity: [0.3, 0.8, 0.3] }}
-            transition={{ duration: 1.8, repeat: Infinity }}
-          />
-        )}
-        <motion.div
+    <div className="relative">
+      {!revealed && (
+        <motion.span
+          className="pointer-events-none absolute -inset-1.5 rounded-[1.4rem]"
+          style={{ boxShadow: '0 0 26px 4px rgba(231,205,134,0.4)' }}
+          animate={{ opacity: [0.25, 0.7, 0.25] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        />
+      )}
+      {/* embossed gold rim */}
+      <div
+        className="relative rounded-[1.4rem] p-[3px]"
+        style={{ background: 'conic-gradient(from 210deg, #A07A2C, #FBEBC0, #E7CD86, #A07A2C, #FBEBC0, #A07A2C)' }}
+      >
+        <div
           ref={wrapRef}
-          className="relative h-[92px] w-[92px] select-none overflow-hidden rounded-full bg-cream-light shadow-card ring-2 ring-gold/60"
-          animate={revealed ? {} : { y: [0, -4, 0] }}
-          transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
+          className="relative h-[140px] w-full select-none overflow-hidden rounded-[1.25rem] bg-cream-light shadow-[inset_0_2px_8px_rgba(122,90,46,0.3)]"
         >
-          <div className="absolute inset-0 flex items-center justify-center">
-            <motion.span
-              className="font-serif text-2xl font-semibold text-maroon"
-              animate={revealed ? { scale: [0.5, 1.2, 1] } : {}}
-              transition={{ duration: 0.5 }}
-            >
-              {coin.v}
-            </motion.span>
+          <span className="pointer-events-none absolute inset-[8px] z-10 rounded-[1rem] border border-gold-dark/25" />
+          <div className="absolute inset-0 flex items-center justify-center px-4 text-center">
+            {children}
           </div>
+          {revealed && (
+            <motion.span
+              className="pointer-events-none absolute inset-y-0 z-20 w-1/3 bg-gradient-to-r from-transparent via-white/55 to-transparent"
+              initial={{ x: '-160%' }}
+              animate={{ x: '320%' }}
+              transition={{ duration: 1, delay: 0.15, ease: 'easeInOut' }}
+            />
+          )}
           <canvas
             ref={canvasRef}
-            className={`absolute inset-0 touch-none ${revealed ? 'pointer-events-none' : 'cursor-grab active:cursor-grabbing'}`}
+            className={`absolute inset-0 z-30 touch-none ${revealed ? 'pointer-events-none' : 'cursor-grab active:cursor-grabbing'}`}
             onMouseDown={start}
             onMouseMove={move}
             onMouseUp={end}
@@ -164,43 +173,22 @@ function ScratchCoin({ coin, onReveal, revealedInit = false }) {
             onTouchMove={move}
             onTouchEnd={end}
           />
-        </motion.div>
+        </div>
       </div>
-      <span className="font-body text-[9px] uppercase tracking-[0.25em] text-gold-light/70">{coin.k}</span>
     </div>
   )
 }
 
-const DONE_KEY = 'sf-scratch-done'
-
 export default function ScratchCard() {
-  const coins = dateCoins()
-  // Remember if this guest already scratched — don't make them do it again.
-  const initialDone = (() => {
-    try {
-      return localStorage.getItem(DONE_KEY) === '1'
-    } catch {
-      return false
-    }
-  })()
-  const [revealedCount, setRevealedCount] = useState(initialDone ? coins.length : 0)
+  // Always start covered so every guest gets to scratch the date open.
+  const initialDone = false
+  const [revealed, setRevealed] = useState(initialDone)
   const [burst, setBurst] = useState(false)
-  const allDone = revealedCount >= coins.length
 
   const handleReveal = () => {
-    setRevealedCount((n) => {
-      const next = n + 1
-      if (next >= coins.length) {
-        setBurst(true)
-        setTimeout(() => setBurst(false), 4000)
-        try {
-          localStorage.setItem(DONE_KEY, '1')
-        } catch {
-          /* ignore */
-        }
-      }
-      return next
-    })
+    setRevealed(true)
+    setBurst(true)
+    setTimeout(() => setBurst(false), 4000)
   }
 
   return (
@@ -214,81 +202,88 @@ export default function ScratchCard() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="relative overflow-hidden rounded-[2rem] bg-gradient-to-b from-maroon-wine to-maroon-dark px-6 py-9 text-center shadow-card ring-1 ring-gold/30"
+          className="gold-frame relative overflow-hidden rounded-[2rem] bg-gradient-to-b from-maroon-wine to-maroon-dark px-6 py-9 text-center shadow-card"
         >
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(231,205,134,0.2),transparent_60%)]" />
-          <span className="pointer-events-none absolute inset-2.5 rounded-[1.6rem] border border-gold/20" />
+          {/* refined double inset frame */}
+          <span className="pointer-events-none absolute inset-2 rounded-[1.7rem] border border-gold/35" />
+          <span className="pointer-events-none absolute inset-[0.65rem] rounded-[1.5rem] border border-gold/15" />
+          <CornerFlourish className="pointer-events-none absolute left-3 top-3" />
+          <CornerFlourish className="pointer-events-none absolute right-3 top-3 -scale-x-100" />
+          <CornerFlourish className="pointer-events-none absolute bottom-3 left-3 -scale-y-100" />
+          <CornerFlourish className="pointer-events-none absolute bottom-3 right-3 -scale-100" />
 
-          <p className="font-body text-[10px] uppercase tracking-[0.45em] text-gold/80">Save the Date</p>
-          <h2 className="mt-2 font-script text-5xl text-gold-shimmer">Reveal</h2>
-          <p className="mt-2 font-serif text-base text-cream/85">
-            {wedding.bride.name} &amp; {wedding.groom.name}
-          </p>
+          <div className="relative">
+            <p className="font-body text-[10px] uppercase tracking-[0.45em] text-gold/80">Save the Date</p>
+            <h2 className="mt-2 font-script text-5xl text-gold-shimmer">Reveal</h2>
+            <p className="mt-2 font-serif text-base text-cream/85">
+              {wedding.bride.name} &amp; {wedding.groom.name}
+            </p>
 
-          {/* hint / done line */}
-          <div className="mt-3 h-5">
-            <AnimatePresence mode="wait">
-              {!allDone ? (
-                <motion.p
-                  key="hint"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: [0.5, 1, 0.5] }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 1.8, repeat: Infinity }}
-                  className="font-body text-[11px] uppercase tracking-[0.25em] text-gold-light"
-                >
-                  ✦ scratch the coins ✦
-                </motion.p>
-              ) : (
-                <motion.p
-                  key="done"
-                  initial={{ opacity: 0, y: 6 }}
+            {/* hint line — only before the reveal; nothing shown afterwards */}
+            <div className="mb-6 mt-3 h-5">
+              <AnimatePresence mode="wait">
+                {!revealed && (
+                  <motion.p
+                    key="hint"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: [0.5, 1, 0.5] }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 1.8, repeat: Infinity }}
+                    className="font-body text-[11px] uppercase tracking-[0.25em] text-gold-light"
+                  >
+                    ✦ scratch to reveal the date ✦
+                  </motion.p>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* single scratch panel revealing the full date */}
+            <ScratchPanel onReveal={handleReveal} revealedInit={initialDone}>
+              <motion.div
+                animate={revealed ? { scale: [0.85, 1.05, 1], opacity: 1 } : { opacity: 1 }}
+                transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                className="flex flex-col items-center text-maroon-dark"
+              >
+                <span className="font-body text-[10px] uppercase tracking-[0.4em] text-gold-dark">
+                  {new Date(wedding.date).toLocaleString('en', { weekday: 'long' })}
+                </span>
+                {/* day flanked by hairlines */}
+                <div className="mt-1.5 flex items-center gap-3">
+                  <span className="h-px w-8 bg-gold-dark/40" />
+                  <span className="font-script text-[3.4rem] leading-none">
+                    {new Date(wedding.date).getDate()}
+                  </span>
+                  <span className="h-px w-8 bg-gold-dark/40" />
+                </div>
+                <span className="mt-1 font-serif text-xl font-semibold uppercase tracking-[0.28em]">
+                  {new Date(wedding.date).toLocaleString('en', { month: 'long' })}{' '}
+                  {new Date(wedding.date).getFullYear()}
+                </span>
+              </motion.div>
+            </ScratchPanel>
+
+            {/* venue line appears after the reveal */}
+            <AnimatePresence>
+              {revealed && (
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="font-body text-[11px] uppercase tracking-[0.25em] text-gold-light"
+                  transition={{ delay: 0.25, duration: 0.6 }}
+                  className="mt-6"
                 >
-                  Save the date ♥
-                </motion.p>
+                  <div className="mx-auto mb-3 h-px w-24 bg-gradient-to-r from-transparent via-gold/60 to-transparent" />
+                  <p className="mb-1.5 font-body text-[10px] uppercase tracking-[0.28em] text-gold-light">
+                    {wedding.timeLabel}
+                  </p>
+                  <p className="font-serif text-base text-cream-light">{wedding.venue.name}</p>
+                  <p className="mt-0.5 font-body text-[10px] uppercase tracking-[0.22em] text-cream/60">
+                    {wedding.venue.address}
+                  </p>
+                </motion.div>
               )}
             </AnimatePresence>
           </div>
-
-          {/* coins */}
-          <div className="mt-6 flex items-start justify-center gap-3">
-            {coins.map((coin, i) => (
-              <ScratchCoin key={i} coin={coin} onReveal={handleReveal} revealedInit={initialDone} />
-            ))}
-          </div>
-
-          {/* progress */}
-          <div className="mx-auto mt-7 w-full max-w-[16rem]">
-            <div className="h-1.5 overflow-hidden rounded-full bg-maroon-dark/70">
-              <motion.div
-                className="h-full rounded-full bg-gradient-to-r from-gold to-gold-light"
-                animate={{ width: `${Math.round((revealedCount / coins.length) * 100)}%` }}
-                transition={{ ease: 'easeOut' }}
-              />
-            </div>
-            <p className="mt-2 font-body text-[10px] uppercase tracking-[0.2em] text-cream/55">
-              {revealedCount} / {coins.length} revealed
-            </p>
-          </div>
-
-          {/* celebration reveal */}
-          <AnimatePresence>
-            {allDone && (
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2, duration: 0.6 }}
-                className="mt-6"
-              >
-                <div className="mx-auto mb-4 h-px w-24 bg-gradient-to-r from-transparent via-gold/60 to-transparent" />
-                <p className="font-serif text-2xl text-cream-light">{wedding.dateLabel}</p>
-                <p className="mt-2 font-body text-[11px] uppercase tracking-[0.25em] text-gold-light">{wedding.timeLabel}</p>
-                <p className="mt-1 font-serif text-base text-cream/80">{wedding.venue.name}</p>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </motion.div>
       </div>
     </section>
