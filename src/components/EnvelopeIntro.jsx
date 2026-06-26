@@ -2,38 +2,16 @@ import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { wedding } from '../data/config'
 
-// Gold coin with red monogram letters — clean, no extra ornament.
+// Couple monogram badge used as the seal.
 function WaxSeal() {
-  const initials = `${wedding.bride.name[0]}·${wedding.groom.name[0]}`
   return (
-    <svg width="92" height="92" viewBox="0 0 120 120" aria-hidden="true">
-      <defs>
-        <radialGradient id="coinGold" cx="38%" cy="32%" r="75%">
-          <stop offset="0%" stopColor="#FBEBC0" />
-          <stop offset="45%" stopColor="#E7CD86" />
-          <stop offset="100%" stopColor="#A07A2C" />
-        </radialGradient>
-        <filter id="coinShadow" x="-30%" y="-30%" width="160%" height="160%">
-          <feDropShadow dx="0" dy="2" stdDeviation="2.2" floodColor="#7A5A2E" floodOpacity="0.35" />
-        </filter>
-      </defs>
-      {/* coin body */}
-      <circle cx="60" cy="60" r="52" fill="url(#coinGold)" filter="url(#coinShadow)" />
-      {/* coin rim */}
-      <circle cx="60" cy="60" r="46" fill="none" stroke="#A07A2C" strokeOpacity="0.65" strokeWidth="2" />
-      {/* red monogram letters */}
-      <text
-        x="60"
-        y="74"
-        textAnchor="middle"
-        fontFamily="'Cormorant Garamond', serif"
-        fontSize="34"
-        fontWeight="700"
-        fill="#9E1B2E"
-      >
-        {initials}
-      </text>
-    </svg>
+    <img
+      src="/seal-clean.png"
+      alt=""
+      aria-hidden="true"
+      className="block h-[84px] w-[84px] select-none object-contain drop-shadow-[0_4px_8px_rgba(122,90,46,0.4)]"
+      draggable="false"
+    />
   )
 }
 

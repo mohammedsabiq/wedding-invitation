@@ -1,22 +1,44 @@
+import { useEffect, useRef } from 'react'
 import { wedding } from '../data/config'
 import { GoldRings } from './Roses'
 import { Reveal } from './ui'
 import Watermark from './Watermark'
 
 export default function Footer() {
+  const videoRef = useRef(null)
+
+  // iOS only autoplays when the element is *actually* muted. React's `muted`
+  // prop doesn't reliably set the DOM property, so force it and kick off play.
+  useEffect(() => {
+    const v = videoRef.current
+    if (!v) return
+    v.muted = true
+    v.defaultMuted = true
+    const tryPlay = () => {
+      const p = v.play()
+      if (p && p.catch) p.catch(() => {})
+    }
+    tryPlay()
+    // retry once the tab/section becomes visible (covers iOS deferral)
+    const onVis = () => document.visibilityState === 'visible' && tryPlay()
+    document.addEventListener('visibilitychange', onVis)
+    return () => document.removeEventListener('visibilitychange', onVis)
+  }, [])
+
   return (
     <footer className="relative overflow-hidden px-5 pt-4 pb-14 text-center text-cream-light">
       {/* full-bleed looping video backdrop */}
       <video
+        ref={videoRef}
         className="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover"
         autoPlay
         loop
         muted
         playsInline
+        preload="auto"
         aria-hidden="true"
-      >
-        <source src="/footer-bg.mp4" type="video/mp4" />
-      </video>
+        src="/footer-bg.mp4"
+      />
       <Watermark tone="maroon" />
 
       <div className="relative z-10 mx-auto max-w-sm">

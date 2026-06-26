@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import Lenis from 'lenis'
 import EnvelopeIntro from './components/EnvelopeIntro'
 import Petals from './components/Petals'
 import Hero from './components/Hero'
@@ -19,10 +20,54 @@ export default function App() {
   // Hide the ambient petals/sparkles over the last section (footer video).
   const [atFooter, setAtFooter] = useState(false)
   const footerRef = useRef(null)
+  const lenisRef = useRef(null)
+
+  // Smooth, inertial scrolling via Lenis.
+  useEffect(() => {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduce) return
+    const lenis = new Lenis({
+      lerp: 0.06, // lower = floatier, longer glide
+      smoothWheel: true,
+      wheelMultiplier: 0.9,
+      touchMultiplier: 0.9, // slower, more controlled touch scrolling
+    })
+    lenisRef.current = lenis
+    let raf
+    const loop = (t) => {
+      lenis.raf(t)
+      raf = requestAnimationFrame(loop)
+    }
+    raf = requestAnimationFrame(loop)
+
+    // Route in-page anchor links through Lenis for smooth section jumps.
+    const onClick = (e) => {
+      const a = e.target.closest('a[href^="#"]')
+      if (!a) return
+      const id = a.getAttribute('href')
+      if (id.length > 1) {
+        const el = document.querySelector(id)
+        if (el) {
+          e.preventDefault()
+          lenis.scrollTo(el, { offset: -8 })
+        }
+      }
+    }
+    document.addEventListener('click', onClick)
+
+    return () => {
+      cancelAnimationFrame(raf)
+      document.removeEventListener('click', onClick)
+      lenis.destroy()
+      lenisRef.current = null
+    }
+  }, [])
 
   // Lock page scrolling while the opening intro is showing.
   useEffect(() => {
     document.body.style.overflow = opened ? '' : 'hidden'
+    const lenis = lenisRef.current
+    if (lenis) opened ? lenis.start() : lenis.stop()
     return () => {
       document.body.style.overflow = ''
     }
